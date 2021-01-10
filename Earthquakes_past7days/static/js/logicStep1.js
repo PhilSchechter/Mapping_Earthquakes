@@ -41,6 +41,23 @@ let myStyle = {
 
 // Grabbing our GeoJSON data.
 d3.json(earthquakeData).then(function(data) {
+  function styleInfo(feature){
+    return {
+      opacity: 1,
+      fillOpacity: 1,
+      fillColor: "#ffae42",
+      color: "#000000",
+      radius: getRadius(feature.properties.mag),
+      stroke: true,
+      weight: 0.5
+    };
+  }
+function getRadius(magnitude){
+  if (magnitude === 0) {
+    return 1;
+  }
+  return magnitude * 4;
+}
 //   console.log(data);
 //  L.geoJson(data, {
 //   style: myStyle,
@@ -48,5 +65,13 @@ d3.json(earthquakeData).then(function(data) {
 //     console.log(layer);
 //    layer.bindPopup("<h2>Neighborhood: "+ Feature.properties.AREA_NAME + "</h2><hr><h3>" +Feature.properties.AREA_S_CD +"</h3>" );
 //   }}).addTo(map);
-L.geoJSON(data).addTo(map);
+L.geoJSON(data, {
+//turn each feature into a circleMarker on the map
+  pointToLayer: function(feature,latlng){
+    console.log(data);
+    return L.circleMarker(latlng);
+
+  },
+  style: styleInfo
+}).addTo(map);
 });
